@@ -48,13 +48,3 @@ inv_matrix = Inverse_Perspective_transform("original.png", src_pts, dst_pts)
 # 3. 勾选框状态检测
 getChecked("user_data.json", "template.json", "user_img.png", "template_img.png")
 ```
-
----
-
-## 🔧 核心算法
-```diff
-+ 自适应阈值分割（Adaptive Thresholding）
-+ 形态学运算组合优化（Erosion&Dilation）
-+ 透视变换矩阵计算（getPerspectiveTransform）
-+ 模板匹配驱动检测（Template-Driven Detection）
-```
