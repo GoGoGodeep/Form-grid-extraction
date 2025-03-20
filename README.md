@@ -1,53 +1,65 @@
-# Form grid extraction
+```markdown
+# 📑 表单结构化提取系统（Form Grid Extraction）
 
-### 本项目基于OpenCV库实现表单（如合同）图片的预处理、表格方框的检测与坐标提取、勾选框的检测的功能。
+基于OpenCV实现合同等表单图像的**表格检测定位**与**勾选框识别**系统
 
-—————————————————————————————
+![OpenCV](https://img.shields.io/badge/OpenCV-4.8.0-green) ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 
-#### 文件内容：
-#### PerTransformation.py：表单方格提取与勾选框检测算法实现
-#### GetChecked.py：算法调用应用
+## 🛠️ 核心功能
 
-—————————————————————————————
+### 🔍 图像预处理管线
+- **🖼️ 灰度化**：RGB图像转灰度空间
+- **⚫️ 自适应二值化**：动态阈值分割文本区域
+- **⛏️ 形态学操作**：腐蚀膨胀联合提取表格线特征
 
-#### 主要功能：
+### 📊 表格结构解析
+- **📐 透视矫正**：自动检测表格轮廓并计算变换矩阵
+- **🔄 逆透视映射**：保持原始坐标系的几何关系
+- **📍 坐标解析**：输出表格单元格的精确坐标矩阵
 
-1. **图像预处理**：
-   - **灰度化**：将彩色图像转换为灰度图像。
-   - **二值化**：使用自适应阈值方法将灰度图像转换为二值图像。
-   - **腐蚀和膨胀**：通过腐蚀和膨胀操作提取图像中的横线和竖线。
+### ✅ 勾选框识别
+- **🎯 ROI定位**：基于模板匹配的复选框定位
+- **🖤 像素密度分析**：计算黑色像素占比判断勾选状态
+- **📝 JSON联动**：自动更新表单数据文件
 
-2. **表格检测**：
-   - **轮廓检测**：检测二值图像中的表格轮廓。
-   - **透视变换**：计算透视变换的初始和目标坐标，并对表格图像进行透视变换，将其矫正为矩形。
+---
 
-3. **逆透视变换**：
-   - **逆透视变换矩阵计算**：根据原始图像和透视变换后的图像计算逆透视变换矩阵。
-   - **坐标变换**：使用逆透视变换矩阵将透视变换后的坐标转换回原始图像的视角。
+## 📂 代码架构
+```bash
+├── PerTransformation.py    # 📄 核心算法实现（预处理/表格检测/坐标变换）
+├── GetChecked.py           # 📄 应用层接口（勾选框检测与数据更新）
+```
 
-4. **勾选框检测**：
-   - **黑色点比例计算**：根据模板图片的json文件中的勾选框坐标，在输入图片对应位置计算黑色点比例。
-   - **json文件修改**：根据黑色点比例修改输入图片的json文件，标记勾选框的状态。
+## 🚀 快速开始
 
-#### 使用方法：
+### 环境配置
+```bash
+pip install opencv-python numpy
+```
 
-1. **安装依赖**：
-   ```bash
-   pip install opencv-python numpy
-   ```
+### 示例流程
+```python
+# 1. 表格结构提取
+result_img, src_pts, dst_pts = preProcess("contract.png")
 
-2. **准备数据**：
-   - 准备需要处理的图片和对应的json文件。
-   - 确保图片和json文件的路径正确。
+# 2. 建立坐标映射关系
+inv_matrix = Inverse_Perspective_transform("original.png", src_pts, dst_pts)
 
-3. **调用函数**：
-   ```python
-   # 对图像进行预处理和透视变换
-   result_img, pts_o, pts_d = preProcess("path_to_your_image.png")
+# 3. 勾选框状态检测
+getChecked("user_data.json", "template.json", "user_img.png", "template_img.png")
+```
 
-   # 对透视变换后的图像进行逆透视变换
-   inv_M = Inverse_Perspective_transform("path_to_original_image.png", pts_o, pts_d)
+---
 
-   # 根据模板json文件检测勾选框，并修改json文件
-   getChecked("path_to_your_json_file.json", "path_to_template_json_file.json", "path_to_your_image.png", "path_to_template_image.png")
-   ```
+## 🔧 核心算法
+```diff
++ 自适应阈值分割（Adaptive Thresholding）
++ 形态学运算组合优化（Erosion&Dilation）
++ 透视变换矩阵计算（getPerspectiveTransform）
++ 模板匹配驱动检测（Template-Driven Detection）
+```
+
+> ⚠️ **注意事项**  
+> 1. 确保模板图片与JSON文件路径匹配  
+> 2. 建议处理前备份原始数据文件
+```
