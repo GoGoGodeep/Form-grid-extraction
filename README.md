@@ -58,8 +58,3 @@ getChecked("user_data.json", "template.json", "user_img.png", "template_img.png"
 + 透视变换矩阵计算（getPerspectiveTransform）
 + 模板匹配驱动检测（Template-Driven Detection）
 ```
-
-> ⚠️ **注意事项**  
-> 1. 确保模板图片与JSON文件路径匹配  
-> 2. 建议处理前备份原始数据文件
-```
